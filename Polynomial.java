@@ -1,43 +1,15 @@
 class Polynomial {
 	public double[] coefficients;
 	public int[] exponents;
-
+	
+	public Polynomial() {
+		this(new double[0], new int[0]);
+	}
+	
 	public Polynomial(double[] coefficients, int[] exponents) {
 		this.coefficients = coefficients.clone();
 		this.exponents = exponents.clone();
 		this.simplify();
-	}
-
-	public Polynomial() {
-		this(new double[0], new int[0]);
-	}
-
-	public Polynomial add(Polynomial p) {
-		// Just combine both arrays and take advantage of simplification in the constructor :)
-		double[] new_coefficients = new double[this.coefficients.length + p.coefficients.length];
-		int[] new_exponents = new int[this.exponents.length + p.exponents.length];
-		for (int i = 0; i < this.coefficients.length; i++) {
-			new_coefficients[i] = this.coefficients[i];
-			new_exponents[i] = this.exponents[i];
-		}
-		for (int i = 0; i < p.coefficients.length; i++) {
-			new_coefficients[this.coefficients.length + i] = p.coefficients[i];
-			new_exponents[this.exponents.length + i] = p.exponents[i];
-		}
-
-		return new Polynomial(new_coefficients, new_exponents);
-	}
-
-	public double evaluate(double x) {
-		double sum = 0;
-		for (int i = 0; i < this.coefficients.length; i++) {
-			sum += this.coefficients[i] * Math.pow(x, this.exponents[i]);
-		}
-		return sum;
-	}
-	
-	public boolean hasRoot(double x) {
-		return this.evaluate(x) == 0;
 	}
 	
 	/**
@@ -79,6 +51,18 @@ class Polynomial {
 	}
 	
 	/**
+	 * Returns index of first instance of exponent in exponent array, or -1 if exponent not encountered
+	 */
+	private int find_exponent(int exponent) {
+		for (int i = 0; i < this.exponents.length; i++) {
+			if (this.exponents[i] == exponent) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	/**
 	 * Combines duplicate exponent values by adding their coefficients
 	 */
 	private void combine_duplicate_exponents() {
@@ -113,15 +97,31 @@ class Polynomial {
 		this.exponents = new_exponents;
 	}
 	
-	/**
-	 * Returns index of first instance of exponent in exponent array, or -1 if exponent not encountered
-	 */
-	private int find_exponent(int exponent) {
-		for (int i = 0; i < this.exponents.length; i++) {
-			if (this.exponents[i] == exponent) {
-				return i;
-			}
+	public Polynomial add(Polynomial p) {
+		// Just combine both arrays and take advantage of simplification in the constructor :)
+		double[] new_coefficients = new double[this.coefficients.length + p.coefficients.length];
+		int[] new_exponents = new int[this.exponents.length + p.exponents.length];
+		for (int i = 0; i < this.coefficients.length; i++) {
+			new_coefficients[i] = this.coefficients[i];
+			new_exponents[i] = this.exponents[i];
 		}
-		return -1;
+		for (int i = 0; i < p.coefficients.length; i++) {
+			new_coefficients[this.coefficients.length + i] = p.coefficients[i];
+			new_exponents[this.exponents.length + i] = p.exponents[i];
+		}
+
+		return new Polynomial(new_coefficients, new_exponents);
+	}
+	
+	public double evaluate(double x) {
+		double sum = 0;
+		for (int i = 0; i < this.coefficients.length; i++) {
+			sum += this.coefficients[i] * Math.pow(x, this.exponents[i]);
+		}
+		return sum;
+	}
+	
+	public boolean hasRoot(double x) {
+		return this.evaluate(x) == 0;
 	}
 }
