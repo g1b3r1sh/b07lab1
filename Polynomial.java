@@ -1,15 +1,24 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 class Polynomial {
 	public double[] coefficients;
 	public int[] exponents;
-	
-	public Polynomial() {
-		this(new double[0], new int[0]);
-	}
 	
 	public Polynomial(double[] coefficients, int[] exponents) {
 		this.coefficients = coefficients.clone();
 		this.exponents = exponents.clone();
 		this.simplify();
+	}
+
+	public Polynomial() {
+		this(new double[0], new int[0]);
+	}
+	
+	public Polynomial(File file) throws FileNotFoundException {
+		Scanner scanner = new Scanner(file);
+		String poly_str = scanner.next();
 	}
 	
 	/**
@@ -110,6 +119,22 @@ class Polynomial {
 			new_exponents[this.exponents.length + i] = p.exponents[i];
 		}
 
+		return new Polynomial(new_coefficients, new_exponents);
+	}
+	
+	public Polynomial multiply(Polynomial p) {
+		// Create arrays containing product between all entries in two polynomials,
+		//     where [i + j * this.length] is index of product of ith entry in this and jth entry in p
+		// Note that arrays will be simplified in constructor of new polynomial
+		double[] new_coefficients = new double[this.coefficients.length * p.coefficients.length];
+		int[] new_exponents = new int[this.exponents.length * p.exponents.length];
+		for (int i = 0; i < this.coefficients.length; i++) {
+			for (int j = 0; j < this.coefficients.length; j++) {
+				new_coefficients[i + j * this.coefficients.length] = this.coefficients[i] * p.coefficients[j];
+				new_exponents[i + j * this.exponents.length] = this.exponents[i] + p.exponents[j];
+			}
+		}
+		
 		return new Polynomial(new_coefficients, new_exponents);
 	}
 	

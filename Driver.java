@@ -14,5 +14,21 @@ public class Driver {
 			System.out.println("1 is a root of s");
 		else
 			System.out.println("1 is not a root of s");
+		Polynomial p12 = p1.multiply(p2);
+		for (int i = 0; i < 10; i++) {
+			System.out.println("p1(" + i + ")*p2(" + i + ") = " + p12.evaluate(i) + " = " + p1.evaluate(i) * p2.evaluate(i));
+		}
+		System.out.println("p1*p2 " + (has_duplicates(p12) ? "has" : "does not have") + " duplicates");
+	}
+	
+	public static boolean has_duplicates(Polynomial p) {
+		for (int i = 0; i < p.exponents.length; i++) {
+			for (int j = 0; j < i; j++) {
+				if (p.exponents[i] == p.exponents[j]) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
