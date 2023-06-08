@@ -19,6 +19,8 @@ public class Driver {
 			System.out.println("p1(" + i + ")*p2(" + i + ") = " + p12.evaluate(i) + " = " + p1.evaluate(i) * p2.evaluate(i));
 		}
 		System.out.println("p1*p2 " + (has_duplicates(p12) ? "has" : "does not have") + " duplicates");
+		Polynomial p3 = new Polynomial("5-3x2+7x8");
+		System.out.println("p3(1) = " + p3.evaluate(1));
 	}
 	
 	public static boolean has_duplicates(Polynomial p) {

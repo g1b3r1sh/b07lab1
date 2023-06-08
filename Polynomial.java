@@ -6,19 +6,61 @@ class Polynomial {
 	public double[] coefficients;
 	public int[] exponents;
 	
-	public Polynomial(double[] coefficients, int[] exponents) {
+	
+	private void initialise(double[] coefficients, int[] exponents) {
 		this.coefficients = coefficients.clone();
 		this.exponents = exponents.clone();
 		this.simplify();
+	}	
+	
+	private void initialise(String poly_str) {
+		// Since minus signs only occur before coefficients, add plus sign in front to allow for easier processing
+		poly_str = poly_str.replace("-", "+-");
+		
+		// Parse string into coefficient and exponent arrays
+		String[] terms = poly_str.split("\\+");
+		double[] new_coefficients = new double[terms.length];
+		int[] new_exponents = new int[terms.length];
+		for (int i = 0; i < terms.length; i++) {
+			String term = terms[i];
+			double coefficient;
+			int exponent;
+			if (term.contains("x")) {
+				String[] numbers = term.split("x");
+				coefficient = Double.parseDouble(numbers[0]);
+				exponent = Integer.parseInt(numbers[1]);
+			}
+			else {
+				// Special case for zero degree term
+				coefficient = Double.parseDouble(term);
+				exponent = 0;
+			}
+			new_coefficients[i] = coefficient;
+			new_exponents[i] = exponent;
+		}
+		
+		this.initialise(new_coefficients, new_exponents);
+	}
+	
+	public Polynomial(double[] coefficients, int[] exponents) {
+		this.initialise(coefficients, exponents);
 	}
 
 	public Polynomial() {
 		this(new double[0], new int[0]);
 	}
 	
+	public Polynomial(String poly_str) {
+		this.initialise(poly_str);
+	}
+	
 	public Polynomial(File file) throws FileNotFoundException {
+		// Read file data into string
 		Scanner scanner = new Scanner(file);
 		String poly_str = scanner.next();
+		scanner.close();
+		
+		this.initialise(poly_str);
 	}
 	
 	/**
