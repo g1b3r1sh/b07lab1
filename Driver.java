@@ -1,5 +1,8 @@
+import java.io.File;
+import java.io.IOException;
+
 public class Driver {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Polynomial p = new Polynomial();
 		System.out.println(p.evaluate(3));
 		double[] c1 = {6, 0, 0, 5};
@@ -20,7 +23,11 @@ public class Driver {
 		}
 		System.out.println("p1*p2 " + (has_duplicates(p12) ? "has" : "does not have") + " duplicates");
 		Polynomial p3 = new Polynomial("5-3x2+7x8");
-		System.out.println("p3(1) = " + p3.evaluate(1));
+		System.out.println("p3(1) = (" + p3 + ")(1) = " + p3.evaluate(1));
+		System.out.println("Saving p3 to test.txt");
+		p3.saveToFile("test.txt");
+		Polynomial p4 = new Polynomial(new File("test.txt"));
+		System.out.println(p3 + " = " + p4);
 	}
 	
 	public static boolean has_duplicates(Polynomial p) {

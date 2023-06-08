@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -18,9 +20,11 @@ class Polynomial {
 		poly_str = poly_str.replace("-", "+-");
 		
 		// Parse string into coefficient and exponent arrays
+		// Split string into terms
 		String[] terms = poly_str.split("\\+");
 		double[] new_coefficients = new double[terms.length];
 		int[] new_exponents = new int[terms.length];
+		// Parse each coefficient and exponent of term and append to arrays
 		for (int i = 0; i < terms.length; i++) {
 			String term = terms[i];
 			double coefficient;
@@ -29,8 +33,7 @@ class Polynomial {
 				String[] numbers = term.split("x");
 				coefficient = Double.parseDouble(numbers[0]);
 				exponent = Integer.parseInt(numbers[1]);
-			}
-			else {
+			} else {
 				// Special case for zero degree term
 				coefficient = Double.parseDouble(term);
 				exponent = 0;
@@ -128,8 +131,7 @@ class Polynomial {
 				this.coefficients[num_unique_exponents] = this.coefficients[i];
 				this.exponents[num_unique_exponents] = this.exponents[i];
 				num_unique_exponents++;
-			}
-			else {
+			} else {
 				// Otherwise, combine coefficients of duplicate value
 				this.coefficients[exponent_index] += this.coefficients[i];
 			}
@@ -149,7 +151,7 @@ class Polynomial {
 	}
 	
 	public Polynomial add(Polynomial p) {
-		// Just combine both arrays and take advantage of simplification in the constructor :)
+		// Just combine both arrays and take advantage of simplification that happens in the constructor :)
 		double[] new_coefficients = new double[this.coefficients.length + p.coefficients.length];
 		int[] new_exponents = new int[this.exponents.length + p.exponents.length];
 		for (int i = 0; i < this.coefficients.length; i++) {
@@ -190,5 +192,28 @@ class Polynomial {
 	
 	public boolean hasRoot(double x) {
 		return this.evaluate(x) == 0;
+	}
+	
+	public String toString() {
+		// Create list of string representation for each term
+		String[] terms = new String[this.coefficients.length];
+		for (int i = 0; i < terms.length; i++) {
+			if (this.exponents[i] != 0) {
+				terms[i] = String.valueOf(this.coefficients[i]) + "x" + String.valueOf(this.exponents[i]);
+			} else {
+				terms[i] = String.valueOf(this.coefficients[i]);
+			}
+		}
+		
+		// Create string by combining string representation of terms
+		String repr = String.join("+", terms);
+		repr = repr.replace("+-", "-");
+		return repr;
+	}
+	
+	public void saveToFile(String filename) throws IOException {
+		FileWriter writer = new FileWriter(filename);
+		writer.write(this.toString());
+		writer.close();
 	}
 }
